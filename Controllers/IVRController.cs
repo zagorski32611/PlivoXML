@@ -4,6 +4,8 @@ using System.Diagnostics;
 using Plivo.XML;
 using Plivo;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+
 
 namespace Ivrphonetree.Controllers
 {
@@ -51,8 +53,10 @@ namespace Ivrphonetree.Controllers
         // First branch of IVR phone tree
         public IActionResult FirstBranch()
         {
-            string digit = Request.Query["Digits"];
+            var requestDictionary = this.Request.Form;
 
+            var LinqDigit = from d in requestDictionary where d.Key == "digit" select d.Value;
+            var digit = LinqDigit.ToString();
             //string xdigit = Request.Form["Digits"];
 
             //Debug.WriteLine($"Digit pressed : {this.Request.Form.R}");
