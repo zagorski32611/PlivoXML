@@ -28,3 +28,7 @@
 /Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/obj/Debug/net6.0/PlivoMVC.pdb
 /Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/obj/Debug/net6.0/PlivoMVC.genruntimeconfig.cache
 /Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/obj/Debug/net6.0/ref/PlivoMVC.dll
+/Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/bin/Debug/net6.0/Microsoft.DotNet.PlatformAbstractions.dll
+/Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/bin/Debug/net6.0/Microsoft.Extensions.DependencyModel.dll
+/Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/bin/Debug/net6.0/Microsoft.Extensions.PlatformAbstractions.dll
+/Users/joseph/Documents/DotnetCore/PlivoCoreTest/PlivoMVC/bin/Debug/net6.0/Nancy.dll
