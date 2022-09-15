@@ -28,9 +28,11 @@ namespace Ivrphonetree.Controllers
             string fromNum = "";
             string toNum = "";
             string Msg = "";
+
+            var formData = this.Request.Form;
             
-            foreach(var formEntry in this.Request.Form)
-            { 
+            foreach(var formEntry in formData)
+            {
                 Debug.WriteLine($"{formEntry.Key} : {formEntry.Value}" );
                 if(formEntry.Key == "Text")
                     Msg = formEntry.Value;
@@ -50,7 +52,7 @@ namespace Ivrphonetree.Controllers
 				{"src", source_number is null ? "13307655512" : $"{source_number}"},
 				{"dst", destination_number is null ? "12163759300" : $"{destination_number}" } ,
 				{"type", "sms"},
-				{"callbackUrl", "https://eb6e-2603-6010-8f02-c34-e518-77d-858-fdb6.ngrok.io/Message/sms_status/"},
+				{"callbackUrl", "https://edf3-2603-6010-8f02-c34-e518-77d-858-fdb6.ngrok.io/Message/sms_status/"},
 				{"callbackMethod", "POST"}
 			};
 
@@ -64,8 +66,11 @@ namespace Ivrphonetree.Controllers
 
         public IActionResult SMS_Status()
         {
-            var incomingMsg = this.Request.Body.ToString();
-            Debug.WriteLine(incomingMsg);
+            foreach(var head in this.Request.Headers)
+            {
+                //Debug.WriteLine($"{head.Key} : {head.Value}");
+            }
+            //Debug.WriteLine("Plivo Callback String:" + this.Request.Headers.ToArray());
             return StatusCode(200);
         }
 							
