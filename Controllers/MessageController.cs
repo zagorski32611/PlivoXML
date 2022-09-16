@@ -41,11 +41,20 @@ namespace Ivrphonetree.Controllers
                 else if(formEntry.Key == "To")
                     toNum = formEntry.Value;
             }
-            return SendCallBack($"{fromNum}", $"{toNum}");
+
+            switch (Msg.ToUpper())
+            {
+                case "YES":
+                    return SendCallBack($"{fromNum}", $"{toNum}");
+                case "YO":
+                    return SendCallBack($"{fromNum}", $"{toNum}", "what up?");
+                default:
+                    return SendCallBack($"{fromNum}", $"{toNum}", "Sorry, I don't recognize that");
+            }
 
         }
 
-        public IActionResult SendCallBack(string destination_number, string source_number)
+        public IActionResult SendCallBack(string destination_number, string source_number, string? messageText = "Hello, thank you for signing up!")
         {
             Dictionary<string, string> responseInfo = new Dictionary<string, string>()
 			{
@@ -58,10 +67,9 @@ namespace Ivrphonetree.Controllers
 
             Plivo.XML.Response resp = new Plivo.XML.Response();
 
-			resp.AddMessage("Hello, thank you for signing up!", responseInfo);
+			resp.AddMessage(messageText, responseInfo);
             
-            var output = resp.ToString();
-            return this.Content(output, "text/xml");
+            return this.Content(resp.ToString(), "text/xml");
         }
 
         public IActionResult SMS_Status()
