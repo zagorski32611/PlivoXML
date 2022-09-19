@@ -9,78 +9,107 @@ namespace Ivrphonetree.Controllers
 {
     public class MessageController : Controller
     {
-       
+
         public void SendSMS(string messageText, string destination_number)
         {
             var api = new PlivoApi();
             var response = api.Message.Create(
-                src: "15392034790",
+                src: "",
                 dst: destination_number is null ? $"{destination_number}" : "+12163759300",
                 text: $"{messageText}",
-                url: "https://webhook.site/ae526e29-a6e8-420b-9c3c-1237517cd809");
-            
+                url: "https://d5ee-2603-6010-8f02-c34-b194-c50e-62ab-2f66.ngrok.io/message/sendcallback");
             Console.WriteLine(response.MessageUuid);
         }
 
-
+        [HttpPost]
         public IActionResult ReceiveText()
         {
             string fromNum = "";
             string toNum = "";
             string Msg = "";
+            IHeaderDictionary heads = this.Request.Headers;
+            var url = this.Request.PathBase + this.Request.Path;
 
+            //bool? areYouPlivo = Plivo.Utilities.XPlivoSignatureV2.VerifySignature(url, this.Request.Headers["X-Plivo-Signature-V2-Nonce"], this.Request.Headers["X-Plivo-Signature-V"], this.Request.Headers["NmRmYjBlNjdkOWIyODYyNTQ0OWUyY2MxOTE3MDY5"]);
+
+                //if(areYouPlivo == false)
+                    //return StatusCode(418); // Status Code 418: I'm a tea pot
+        
             var formData = this.Request.Form;
             
-            foreach(var formEntry in formData)
+            foreach (var formEntry in formData)
             {
-                Debug.WriteLine($"{formEntry.Key} : {formEntry.Value}" );
-                if(formEntry.Key == "Text")
+                Debug.WriteLine($"{formEntry.Key} : {formEntry.Value}");
+                
+                if (formEntry.Key == "Text")
                     Msg = formEntry.Value;
-                else if(formEntry.Key == "From")
+                else if (formEntry.Key == "From")
                     fromNum = formEntry.Value;
-                else if(formEntry.Key == "To")
+                else if (formEntry.Key == "To")
                     toNum = formEntry.Value;
             }
-
-            switch (Msg.ToUpper())
-            {
-                case "YES":
-                    return SendCallBack($"{fromNum}", $"{toNum}");
-                case "YO":
-                    return SendCallBack($"{fromNum}", $"{toNum}", "what up?");
-                default:
-                    return SendCallBack($"{fromNum}", $"{toNum}", "Sorry, I don't recognize that");
-            }
-
+            var responseMessage = MessageReader(Msg);
+            return SendCallBack($"{fromNum}", $"{toNum}", $"{responseMessage}");
         }
 
         public IActionResult SendCallBack(string destination_number, string source_number, string? messageText = "Hello, thank you for signing up!")
         {
             Dictionary<string, string> responseInfo = new Dictionary<string, string>()
-			{
-				{"src", source_number is null ? "13307655512" : $"{source_number}"},
-				{"dst", destination_number is null ? "12163759300" : $"{destination_number}" } ,
-				{"type", "sms"},
-				{"callbackUrl", "https://edf3-2603-6010-8f02-c34-e518-77d-858-fdb6.ngrok.io/Message/sms_status/"},
-				{"callbackMethod", "POST"}
-			};
+            {
+                {"src", source_number is null ? "" : $"{source_number}"},
+                {"dst", destination_number is null ? "" : $"{destination_number}" } ,
+                {"type", "sms"},
+                {"callbackUrl", "https://edf3-2603-6010-8f02-c34-e518-77d-858-fdb6.ngrok.io/Message/sms_status/"},
+                {"callbackMethod", "POST"}
+            };
 
             Plivo.XML.Response resp = new Plivo.XML.Response();
 
-			resp.AddMessage(messageText, responseInfo);
-            
+            resp.AddMessage(messageText, responseInfo);
+
             return this.Content(resp.ToString(), "text/xml");
         }
 
+        [HttpPost]
         public IActionResult SMS_Status()
         {
-            foreach(var head in this.Request.Headers)
+            Debug.WriteLine("*****************************************************");
+            foreach (var head in this.Request.Form)
             {
-                //Debug.WriteLine($"{head.Key} : {head.Value}");
+                if (head.Key == "Status")
+                {
+                    Debug.WriteLine($"\n Key: {head.Key} \n Value: {head.Value}");
+                }
+                else if (head.Key == "SentTime")
+                {
+                    Debug.WriteLine($"\n Key: {head.Key} \n Value: {head.Value}");
+                }
             }
-            //Debug.WriteLine("Plivo Callback String:" + this.Request.Headers.ToArray());
             return StatusCode(200);
         }
-							
+
+
+        public string MessageReader(string message, string messageTime = "")
+        {
+            string lowermessage = message.ToLower();
+
+            if (lowermessage == "yes")
+            {
+                return messageTime + "success";
+            }
+            else if(lowermessage == "no")
+            {
+
+                return "thank you subscribing to cat facts! :)";
+            }
+            else if(lowermessage == "yo")
+            {
+                return "what up?";
+            }
+            else
+            {
+                return "sorry, please subscribe to cat facts!";
+            }
+        }
     }
 }

@@ -19,14 +19,14 @@ namespace Ivrphonetree.Controllers
         string WronginputMessage = "Sorry, that's not a valid entry";
         // Sales Phone Number
         string salesPhoneNumber = "+";
-
-        string ngrokHost = "https://ae20-2603-6010-8f02-c34-998e-cb35-2ca2-e44.ngrok.io";
+        string supprtPhoneNumber = "+";
+        string ngrokHost = "https://d5ee-2603-6010-8f02-c34-b194-c50e-62ab-2f66.ngrok.io";
 
         // Support Phone number
-        string supprtPhoneNumber = "+";
+        
 
-        // GET: /IVR/
-        public IActionResult Index()
+        // POST: /ivr/ReceiveCall
+        public IActionResult ReceiveCall()
         {
             var resp = new Response();
             Plivo.XML.GetInput get_input = new
@@ -41,10 +41,8 @@ namespace Ivrphonetree.Controllers
                     });
 
             resp.Add(get_input);
-            get_input.AddSpeak(IvrMessage,
-                new Dictionary<string, string>() { });
-            resp.AddSpeak(NoinputMessage,
-                new Dictionary<string, string>() { });
+            get_input.AddSpeak(IvrMessage, new Dictionary<string, string>() { });
+            resp.AddSpeak(NoinputMessage, new Dictionary<string, string>() { });
 
             var output = resp.ToString();
             return this.Content(output, "text/xml");
@@ -53,14 +51,9 @@ namespace Ivrphonetree.Controllers
         // First branch of IVR phone tree
         public IActionResult FirstBranch()
         {
-            var requestDictionary = this.Request.Form;
-
-            var LinqDigit = from d in requestDictionary where d.Key == "digit" select d.Value;
-            var digit = LinqDigit.ToString();
-            //string xdigit = Request.Form["Digits"];
-
-            //Debug.WriteLine($"Digit pressed : {this.Request.Form.R}");
-
+            var formData = this.Request.Form;
+            
+            string digit = Request.Query["Digit"];
             var resp = new Response();
 
             if (digit == "1")
@@ -112,6 +105,13 @@ namespace Ivrphonetree.Controllers
             Console.WriteLine(output);
 
             return this.Content(output, "text/xml");
+        }
+
+
+        [HttpPost]  
+        public IActionResult receiveTranscription()
+        {
+            return StatusCode(200);
         }
 
     }
