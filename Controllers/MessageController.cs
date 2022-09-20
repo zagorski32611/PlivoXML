@@ -72,7 +72,7 @@ namespace PlivoMVC.Controllers
         public IActionResult SMS_Status()
         {
             Debug.WriteLine("*****************************************************");
-            /*foreach (var head in this.Request.Form)
+            foreach (var head in this.Request.Form)
             {
                 if (head.Key == "Status")
                 {
@@ -82,8 +82,8 @@ namespace PlivoMVC.Controllers
                 {
                     Debug.WriteLine($"\n Key: {head.Key} \n Value: {head.Value}");
                 }
-            }*/
-            return StatusCode(418);
+            }
+            return StatusCode(200);
         }
 
 
@@ -97,12 +97,15 @@ namespace PlivoMVC.Controllers
             }
             else if(lowermessage == "no")
             {
-
                 return "thank you subscribing to cat facts! :)";
             }
             else if(lowermessage == "yo")
             {
                 return "what up?";
+            }
+            else if(lowermessage == "stop")
+            {
+                return "you have been removed from the list";
             }
             else
             {

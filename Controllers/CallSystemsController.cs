@@ -43,16 +43,15 @@ namespace Ivrphonetree.Controllers
             var output = resp.ToString();
             return this.Content(output, "text/xml");
         }
-        
-        
+
+
         // First branch of IVR phone tree
         [HttpPost]
         public IActionResult FirstBranch()
         {
             var requestDictionary = this.Request.Form;
-            var incomingDigit = requestDictionary.Where(x => x.Key.Contains("Digit")).Select(x => x.Value); 
-            
-            Debug.WriteLine(incomingDigit.FirstOrDefault());
+            var incomingDigit = requestDictionary.Where(x => x.Key.Contains("Digit")).Select(x => x.Value);
+
             var resp = new Response();
 
             if (incomingDigit.FirstOrDefault() == "1")
@@ -110,6 +109,8 @@ namespace Ivrphonetree.Controllers
             resp.AddRecord(new Dictionary<string, string>() {
                 {"action", $"{ngrokHost}/callsystems/receiveTranscription/"}, //TO DO
                 {"finishOnKey", ""},
+                {"transcriptionType","auto" },
+                {"transcriptionUrl", $"{ngrokHost}/Callsystems/receiveTranscription/" },
                 {"maxLength", "20"},
                 {"playBeep", "true"},
                 {"timeout", "15"}
@@ -122,19 +123,24 @@ namespace Ivrphonetree.Controllers
         }
 
 
-        [HttpPost]
+       
         public IActionResult receiveTranscription()
         {
             Debug.WriteLine("incoming call to: receiveTranscription");
             var downloadUrl = "";
             foreach (var thing in Request.Form)
             {
-                Debug.WriteLine(thing.Key + " " + thing.Value);
+                //Debug.WriteLine(thing.Key + " " + thing.Value);
                 if (thing.Key == "RecordUrl")
+                {
                     downloadUrl = thing.Value;
+                    Debug.WriteLine($"***** Incoming Voicemail: ***** \n {thing.Value}");
+                }
+                else if(thing.Key == "transcription")
+                {
+                    Debug.WriteLine($"***** Incoming Transcription: ***** \n \"{thing.Value}\"");
+                }
             }
-
-            Debug.WriteLine($"****** Retrieve Voicemail! ****** \n {downloadUrl}");
             return StatusCode(200);
         }
     }
