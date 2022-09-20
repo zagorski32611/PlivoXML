@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 
-namespace Ivrphonetree.Controllers
+namespace PlivoMVC.Controllers
 {
     public class IvrController : Controller
     {
@@ -23,24 +23,24 @@ namespace Ivrphonetree.Controllers
         string ngrokHost = "https://d5ee-2603-6010-8f02-c34-b194-c50e-62ab-2f66.ngrok.io";
 
         // Support Phone number
-        
+
 
         // POST: /ivr/ReceiveCall
-        public IActionResult ReceiveCall()
+        public IActionResult Index()
         {
             var resp = new Response();
             Plivo.XML.GetInput get_input = new
                 Plivo.XML.GetInput("",
                     new Dictionary<string, string>()
                     {
-                        {"action", $"{ngrokHost}/ivr/firstbranch/"},
+                        {"action", "https://<yourdomain>.com/ivr/firstbranch/"},
                         {"method", "POST"},
                         {"digitEndTimeout", "5"},
                         {"inputType", "dtmf"},
                         {"redirect", "true"},
                     });
-
             resp.Add(get_input);
+
             get_input.AddSpeak(IvrMessage, new Dictionary<string, string>() { });
             resp.AddSpeak(NoinputMessage, new Dictionary<string, string>() { });
 
@@ -52,7 +52,7 @@ namespace Ivrphonetree.Controllers
         public IActionResult FirstBranch()
         {
             var formData = this.Request.Form;
-            
+
             string digit = Request.Query["Digit"];
             var resp = new Response();
 
@@ -62,7 +62,7 @@ namespace Ivrphonetree.Controllers
 
                 Plivo.XML.Dial dial = new Plivo.XML.Dial(new Dictionary<string, string>());
                 dial.AddNumber(salesPhoneNumber, new Dictionary<string, string>() { });
-
+                resp.Add(dial);
             }
             else if (digit == "2")
             {
@@ -98,17 +98,12 @@ namespace Ivrphonetree.Controllers
 
         public IActionResult salesBranch()
         {
-            Plivo.XML.Response resp = new Plivo.XML.Response();
-
-            resp.AddSpeak("Hello! Thank you for calling the Sales Team", new Dictionary<string, string>() { });
-            var output = resp.ToString();
-            Console.WriteLine(output);
-
-            return this.Content(output, "text/xml");
+            VoicemailController vm = new();
+            return vm.Index();
         }
 
 
-        [HttpPost]  
+        [HttpPost]
         public IActionResult receiveTranscription()
         {
             return StatusCode(200);

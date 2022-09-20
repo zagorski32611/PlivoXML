@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlivoMVC.Models;
 using Ivrphonetree.Controllers;
 
-namespace receivecallapp.Controllers
+namespace PlivoMVC.Controllers
 {
     public class ReceivecallController : Controller
     {

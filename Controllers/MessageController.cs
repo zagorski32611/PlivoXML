@@ -5,7 +5,7 @@ using Plivo.XML;
 using Plivo;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Ivrphonetree.Controllers
+namespace PlivoMVC.Controllers
 {
     public class MessageController : Controller
     {

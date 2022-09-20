@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PlivoMVC
+namespace PlivoMVC.Controllers
 {
     public class VoicemailController : Controller
     {
