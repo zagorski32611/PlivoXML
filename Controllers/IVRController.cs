@@ -18,8 +18,8 @@ namespace PlivoMVC.Controllers
         // Message that Plivo reads when the caller enters an invalid number
         string WronginputMessage = "Sorry, that's not a valid entry";
         // Sales Phone Number
-        string salesPhoneNumber = "+";
-        string supprtPhoneNumber = "+";
+        string salesPhoneNumber = "+13307655512";
+        string supprtPhoneNumber = "+12166004473";
         string ngrokHost = "https://d5ee-2603-6010-8f02-c34-b194-c50e-62ab-2f66.ngrok.io";
 
         // Support Phone number
@@ -33,7 +33,7 @@ namespace PlivoMVC.Controllers
                 Plivo.XML.GetInput("",
                     new Dictionary<string, string>()
                     {
-                        {"action", "https://<yourdomain>.com/ivr/firstbranch/"},
+                        {"action", $"{ngrokHost}/ivr/FirstBranch/"},
                         {"method", "POST"},
                         {"digitEndTimeout", "5"},
                         {"inputType", "dtmf"},
@@ -51,9 +51,20 @@ namespace PlivoMVC.Controllers
         // First branch of IVR phone tree
         public IActionResult FirstBranch()
         {
+            Console.WriteLine("Incoming request");
             var formData = this.Request.Form;
 
-            string digit = Request.Query["Digit"];
+            string digit = "";
+
+            foreach(var data in formData)
+            {
+                if(data.Key == "Digits")
+                {
+                    digit = data.Value;
+                }
+            }
+            Debug.WriteLine(digit);
+
             var resp = new Response();
 
             if (digit == "1")
@@ -98,8 +109,21 @@ namespace PlivoMVC.Controllers
 
         public IActionResult salesBranch()
         {
-            VoicemailController vm = new();
-            return vm.Index();
+            Plivo.XML.Response resp = new Plivo.XML.Response();
+            resp.AddSpeak("The sales team is busy closing deals. Please leave a voicemail.",
+                new Dictionary<string, string>() { });
+            resp.AddRecord(new Dictionary<string, string>() {
+                {"action", "https:///get_recording/"}, //TO DO
+                {"finishOnKey", ""},
+                {"maxLength", "20"},
+                {"playBeep", "true"},
+                {"timeout", "15"}
+            });
+            resp.AddSpeak("Recording not received",
+                new Dictionary<string, string>() { });
+
+            var output = resp.ToString();
+            return this.Content(output, "text/xml");
         }
 
 
@@ -108,6 +132,5 @@ namespace PlivoMVC.Controllers
         {
             return StatusCode(200);
         }
-
     }
 }

@@ -30,10 +30,8 @@ namespace PlivoMVC.Controllers
             IHeaderDictionary heads = this.Request.Headers;
             var url = this.Request.PathBase + this.Request.Path;
 
-            //bool? areYouPlivo = Plivo.Utilities.XPlivoSignatureV2.VerifySignature(url, this.Request.Headers["X-Plivo-Signature-V2-Nonce"], this.Request.Headers["X-Plivo-Signature-V"], this.Request.Headers["NmRmYjBlNjdkOWIyODYyNTQ0OWUyY2MxOTE3MDY5"]);
-
-                //if(areYouPlivo == false)
-                    //return StatusCode(418); // Status Code 418: I'm a tea pot
+            if(this.Request.Form is null)
+                return StatusCode(418); // I'm a tea pot!
         
             var formData = this.Request.Form;
             
@@ -74,7 +72,7 @@ namespace PlivoMVC.Controllers
         public IActionResult SMS_Status()
         {
             Debug.WriteLine("*****************************************************");
-            foreach (var head in this.Request.Form)
+            /*foreach (var head in this.Request.Form)
             {
                 if (head.Key == "Status")
                 {
@@ -84,8 +82,8 @@ namespace PlivoMVC.Controllers
                 {
                     Debug.WriteLine($"\n Key: {head.Key} \n Value: {head.Value}");
                 }
-            }
-            return StatusCode(200);
+            }*/
+            return StatusCode(418);
         }
 
 
