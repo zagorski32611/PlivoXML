@@ -17,7 +17,7 @@ namespace Ivrphonetree.Controllers
         // Sales Phone Number
         string salesPhoneNumber = "+13307655512";
         string supprtPhoneNumber = "+12166004473";
-        string ngrokHost = "https://37d6-2603-6010-8f02-c34-1b0-230d-6c6d-1a85.ngrok.io";
+        string ngrokHost = "https://0f04-2603-6010-8f02-c34-c5ae-f989-aa7c-4fc0.ngrok.io";
 
         // GET: /<controller>/
         public IActionResult Index()
@@ -74,12 +74,10 @@ namespace Ivrphonetree.Controllers
             }
             else
             {
-                // Add Speak XML tag
                 resp.AddSpeak(WronginputMessage, new Dictionary<string, string>() { });
             }
 
             Debug.WriteLine(resp.ToString());
-
             var output = resp.ToString();
             return this.Content(output, "text/xml");
         }
@@ -89,7 +87,7 @@ namespace Ivrphonetree.Controllers
             Plivo.XML.Response resp = new Plivo.XML.Response();
             resp.AddSpeak("The support team is buried in tickets. Please leave a voicemail or open a ticket.", new Dictionary<string, string>() { });
             resp.AddRecord(new Dictionary<string, string>() {
-                {"action", $"{ngrokHost}/callsystems/receiveTranscription/"}, //TO DO
+                {"action", $"{ngrokHost}/callsystems/receiveTranscription/"},
                 {"finishOnKey", ""},
                 {"maxLength", "20"},
                 {"playBeep", "true"},
@@ -105,9 +103,9 @@ namespace Ivrphonetree.Controllers
         public IActionResult Sales()
         {
             Plivo.XML.Response resp = new Plivo.XML.Response();
-            resp.AddSpeak("The sales team is busy closing deals. Please leave a voicemail.", new Dictionary<string, string>() { });
+            resp.AddSpeak("The sales team is busy closing deals, please leave a message.", new Dictionary<string, string>() { });
             resp.AddRecord(new Dictionary<string, string>() {
-                {"action", $"{ngrokHost}/callsystems/receiveTranscription/"}, //TO DO
+                {"action", $"{ngrokHost}/callsystems/receiveTranscription/"}, 
                 {"finishOnKey", ""},
                 {"transcriptionType","auto" },
                 {"transcriptionUrl", $"{ngrokHost}/Callsystems/receiveTranscription/" },
@@ -122,11 +120,9 @@ namespace Ivrphonetree.Controllers
             return this.Content(output, "text/xml");
         }
 
-
-       
         public IActionResult receiveTranscription()
         {
-            Debug.WriteLine("incoming call to: receiveTranscription");
+            Debug.WriteLine($"Plivo Callback from host: {Request.Host.Value}");
             var downloadUrl = "";
             foreach (var thing in Request.Form)
             {

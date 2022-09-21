@@ -9,6 +9,7 @@ namespace PlivoMVC.Controllers
 {
     public class MessageController : Controller
     {
+        string ngrokHost = "https://0f04-2603-6010-8f02-c34-c5ae-f989-aa7c-4fc0.ngrok.io";
 
         public void SendSMS(string messageText, string destination_number)
         {
@@ -17,7 +18,7 @@ namespace PlivoMVC.Controllers
                 src: "",
                 dst: destination_number is null ? $"{destination_number}" : "+12163759300",
                 text: $"{messageText}",
-                url: "https://d5ee-2603-6010-8f02-c34-b194-c50e-62ab-2f66.ngrok.io/message/sendcallback");
+                url: $"{ngrokHost}/message/sendcallback");
             Console.WriteLine(response.MessageUuid);
         }
 
@@ -29,9 +30,6 @@ namespace PlivoMVC.Controllers
             string Msg = "";
             IHeaderDictionary heads = this.Request.Headers;
             var url = this.Request.PathBase + this.Request.Path;
-
-            if(this.Request.Form is null)
-                return StatusCode(418); // I'm a tea pot!
         
             var formData = this.Request.Form;
             
@@ -57,7 +55,7 @@ namespace PlivoMVC.Controllers
                 {"src", source_number is null ? "" : $"{source_number}"},
                 {"dst", destination_number is null ? "" : $"{destination_number}" } ,
                 {"type", "sms"},
-                {"callbackUrl", "https://edf3-2603-6010-8f02-c34-e518-77d-858-fdb6.ngrok.io/Message/sms_status/"},
+                {"callbackUrl", $"{ngrokHost}/Message/sms_status/"},
                 {"callbackMethod", "POST"}
             };
 
@@ -71,7 +69,6 @@ namespace PlivoMVC.Controllers
         [HttpPost]
         public IActionResult SMS_Status()
         {
-            Debug.WriteLine("*****************************************************");
             foreach (var head in this.Request.Form)
             {
                 if (head.Key == "Status")
