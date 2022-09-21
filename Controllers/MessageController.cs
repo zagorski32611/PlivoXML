@@ -13,13 +13,13 @@ namespace PlivoMVC.Controllers
 
         public void SendSMS(string messageText, string destination_number)
         {
-            var api = new PlivoApi();
+            var api = new PlivoApi("MANZLLNDAZMJHIM2FLOG", "NmRmYjBlNjdkOWIyODYyNTQ0OWUyY2MxOTE3MDY5");
             var response = api.Message.Create(
-                src: "",
+                src: "+14406710402",
                 dst: destination_number is null ? $"{destination_number}" : "+12163759300",
                 text: $"{messageText}",
                 url: $"{ngrokHost}/message/sendcallback");
-            Console.WriteLine(response.MessageUuid);
+            Debug.WriteLine($"Outgoing Message. To:{destination_number}, Content: {messageText}, Message UUID: {response.MessageUuid.FirstOrDefault()}");
         }
 
         [HttpPost]
@@ -62,7 +62,7 @@ namespace PlivoMVC.Controllers
             Plivo.XML.Response resp = new Plivo.XML.Response();
 
             resp.AddMessage(messageText, responseInfo);
-
+            Debug.WriteLine($"Outgoing Callback to Plivo: To: {destination_number}, From: {source_number}, Text: {messageText}");
             return this.Content(resp.ToString(), "text/xml");
         }
 
